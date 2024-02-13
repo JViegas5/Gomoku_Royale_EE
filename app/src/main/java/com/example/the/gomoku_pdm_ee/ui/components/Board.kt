@@ -17,6 +17,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -64,8 +65,11 @@ fun Intersection(clicked: Boolean, replay: Boolean = true, player: Player, onCli
 @Composable
 fun GridView(board: Board, player1: String?, player2: String?, name: MutableState<String> = mutableStateOf(""), replay: Boolean = false, plays: List<Play> = emptyList(), onDismiss: () -> Unit = {}, onSaveFavourite: () -> Unit = {}) {
     val turn = rememberSaveable{ mutableStateOf(Player.A) }
+
     val pieces = rememberSaveable { mutableStateOf(board) }
     val dialog = rememberSaveable { mutableStateOf(false) }
+
+    //Missing a LaunchEffect probably, timer shouldnt reset on reconfigs
     val currTime = rememberSaveable { mutableStateOf(30) }
 
     val clickedList = rememberSaveable { mutableStateOf(MutableList(board.size * board.size) { false }) }
@@ -144,23 +148,21 @@ fun GridView(board: Board, player1: String?, player2: String?, name: MutableStat
         }
     }
     if(!replay) {
-        DisposableEffect(turn.value) {
-            fun startTimer() {
-                timerJob.value?.cancel()
-                currTime.value = 30
-                timerJob.value = scope.launch {
-                    while (currTime.value > 0) {
-                        delay(1000)
-                        currTime.value--
-                    }
-                    println("TRUE TIMER")
-                    dialog.value = true
+        fun startTimer() {
+            timerJob.value?.cancel()
+
+            timerJob.value = scope.launch {
+                while (currTime.value > 0) {
+                    delay(1000)
+                    currTime.value--
                 }
+                println("TRUE TIMER")
+                dialog.value = true
             }
+        }
+        LaunchedEffect(turn.value) {
+            currTime.value = 30
             startTimer()
-            onDispose {
-                timerJob.value?.cancel()
-            }
         }
     }
 
