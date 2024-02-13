@@ -149,23 +149,22 @@ fun GridView(board: Board, player1: String?, player2: String?, name: MutableStat
         }
     }
 
-    // Start the timer when the composable is first composed or when the turn changes
     DisposableEffect(turn.value) {
         fun startTimer() {
-            timerJob.value?.cancel() // Cancel any existing timer job
+            timerJob.value?.cancel()
             currTime.value = 30
             timerJob.value = scope.launch {
                 while (currTime.value > 0) {
                     delay(1000)
                     currTime.value--
-                }// Wait for 30 seconds
+                }
                 println("TRUE TIMER")
-                dialog.value = true // Set the timer expiration state
+                dialog.value = true
             }
         }
         startTimer()
         onDispose {
-            timerJob.value?.cancel() // Cancel the timer job when the composable is disposed
+            timerJob.value?.cancel()
         }
     }
 
