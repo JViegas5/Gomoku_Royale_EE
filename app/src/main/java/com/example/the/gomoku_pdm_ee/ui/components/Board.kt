@@ -1,4 +1,4 @@
-package com.example.the.gomoku_pdm_ee
+package com.example.the.gomoku_pdm_ee.ui.components
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
@@ -17,15 +17,11 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,7 +34,6 @@ import com.example.the.gomoku_pdm_ee.model.Play
 import com.example.the.gomoku_pdm_ee.model.Player
 import com.example.the.gomoku_pdm_ee.ui.game.WinDialog
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -90,7 +85,7 @@ fun GridView(board: Board, player1: String?, player2: String?, name: MutableStat
         ) {
             Text(text = "${player1} (White) vs ${player2} (Black)")
             if(!replay) Text("Player ${turn.value.name}'s turn (${if(turn.value == Player.A) "${player1} (White)" else "${player2} (Black)"})", )
-            Text("You have ${currTime.value} seconds to play")
+            if(!replay) Text("You have ${currTime.value} seconds to play")
             Box(
                 modifier = if(!replay) Modifier.fillMaxSize() else Modifier.align(Alignment.CenterHorizontally),
                 contentAlignment = Alignment.Center
@@ -148,23 +143,24 @@ fun GridView(board: Board, player1: String?, player2: String?, name: MutableStat
             }
         }
     }
-
-    DisposableEffect(turn.value) {
-        fun startTimer() {
-            timerJob.value?.cancel()
-            currTime.value = 30
-            timerJob.value = scope.launch {
-                while (currTime.value > 0) {
-                    delay(1000)
-                    currTime.value--
+    if(!replay) {
+        DisposableEffect(turn.value) {
+            fun startTimer() {
+                timerJob.value?.cancel()
+                currTime.value = 30
+                timerJob.value = scope.launch {
+                    while (currTime.value > 0) {
+                        delay(1000)
+                        currTime.value--
+                    }
+                    println("TRUE TIMER")
+                    dialog.value = true
                 }
-                println("TRUE TIMER")
-                dialog.value = true
             }
-        }
-        startTimer()
-        onDispose {
-            timerJob.value?.cancel()
+            startTimer()
+            onDispose {
+                timerJob.value?.cancel()
+            }
         }
     }
 

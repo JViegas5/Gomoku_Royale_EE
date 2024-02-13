@@ -8,14 +8,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import com.example.the.gomoku_pdm_ee.GridView
-import com.example.the.gomoku_pdm_ee.NavigationHandlers
-import com.example.the.gomoku_pdm_ee.TopBar
+import com.example.the.gomoku_pdm_ee.ui.components.GridView
+import com.example.the.gomoku_pdm_ee.ui.components.NavigationHandlers
+import com.example.the.gomoku_pdm_ee.ui.components.TopBar
 import com.example.the.gomoku_pdm_ee.model.Board
-import com.example.the.gomoku_pdm_ee.model.Play
-import com.example.the.gomoku_pdm_ee.model.Player
 import com.example.the.gomoku_pdm_ee.ui.theme.GomokuRoyalePDMThemeEE
 
 @OptIn(ExperimentalMaterial3Api::class)

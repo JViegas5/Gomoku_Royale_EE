@@ -12,9 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import com.example.the.gomoku_pdm_ee.GridView
-import com.example.the.gomoku_pdm_ee.NavigationHandlers
-import com.example.the.gomoku_pdm_ee.TopBar
+import com.example.the.gomoku_pdm_ee.ui.components.GridView
+import com.example.the.gomoku_pdm_ee.ui.components.NavigationHandlers
+import com.example.the.gomoku_pdm_ee.ui.components.TopBar
 import com.example.the.gomoku_pdm_ee.model.Board
 import com.example.the.gomoku_pdm_ee.model.FavouriteGame
 import com.example.the.gomoku_pdm_ee.ui.theme.GomokuRoyalePDMThemeEE
@@ -41,7 +41,8 @@ fun GameReplayScreen(context: Context, name: String, board: Board, onBackRequest
             topBar = { TopBar(navigation = NavigationHandlers(onBackRequested = onBackRequested)) }
         ) {
             Column(modifier = Modifier
-                .padding(it)) {
+                .padding(it)
+                .fillMaxSize()) {
                 GridView(board = boardReplay.value, favouriteGame.player1, favouriteGame.player2, replay = true, plays = favouriteGame.plays)
             }
         }

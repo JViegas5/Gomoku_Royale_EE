@@ -12,8 +12,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
-import com.example.the.gomoku_pdm_ee.NavigationHandlers
-import com.example.the.gomoku_pdm_ee.TopBar
+import com.example.the.gomoku_pdm_ee.ui.components.NavigationHandlers
+import com.example.the.gomoku_pdm_ee.ui.components.TopBar
 import com.example.the.gomoku_pdm_ee.model.FavouriteGame
 import com.example.the.gomoku_pdm_ee.ui.theme.GomokuRoyalePDMThemeEE
 import com.google.gson.Gson
