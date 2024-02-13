@@ -70,25 +70,14 @@ fun Intersection(clicked: Boolean, replay: Boolean = true, player: Player, onCli
 fun GridView(board: Board, player1: String?, player2: String?, name: MutableState<String> = mutableStateOf(""), replay: Boolean = false, plays: List<Play> = emptyList(), onDismiss: () -> Unit = {}, onSaveFavourite: () -> Unit = {}) {
     val turn = rememberSaveable{ mutableStateOf(Player.A) }
     val pieces = rememberSaveable { mutableStateOf(board) }
-    val dialog = rememberSaveable {
-        mutableStateOf(false)
-    }
+    val dialog = rememberSaveable { mutableStateOf(false) }
+    val currTime = rememberSaveable { mutableStateOf(30) }
 
-    val clickedL = mutableListOf<Boolean>().apply {
-        for (i in 0..board.size * board.size) {
-            add(i, false)
-        }
-    }
+    val clickedList = rememberSaveable { mutableStateOf(MutableList(board.size * board.size) { false }) }
 
-    var clickedList = rememberSaveable { mutableStateOf(MutableList(board.size * board.size) { false }) }
-
-
-    var timerJob = remember { mutableStateOf<Job?>(null) }
+    val timerJob = remember { mutableStateOf<Job?>(null) }
     val won = rememberSaveable{ mutableStateOf<String?>("") }
     val scope = rememberCoroutineScope()
-
-
-
 
     if (dialog.value) {
         if(turn.value == Player.A) won.value=player2 else won.value=player1
@@ -101,6 +90,7 @@ fun GridView(board: Board, player1: String?, player2: String?, name: MutableStat
         ) {
             Text(text = "${player1} (White) vs ${player2} (Black)")
             if(!replay) Text("Player ${turn.value.name}'s turn (${if(turn.value == Player.A) "${player1} (White)" else "${player2} (Black)"})", )
+            Text("You have ${currTime.value} seconds to play")
             Box(
                 modifier = if(!replay) Modifier.fillMaxSize() else Modifier.align(Alignment.CenterHorizontally),
                 contentAlignment = Alignment.Center
@@ -163,8 +153,12 @@ fun GridView(board: Board, player1: String?, player2: String?, name: MutableStat
     DisposableEffect(turn.value) {
         fun startTimer() {
             timerJob.value?.cancel() // Cancel any existing timer job
+            currTime.value = 30
             timerJob.value = scope.launch {
-                delay(30000) // Wait for 30 seconds
+                while (currTime.value > 0) {
+                    delay(1000)
+                    currTime.value--
+                }// Wait for 30 seconds
                 println("TRUE TIMER")
                 dialog.value = true // Set the timer expiration state
             }
@@ -174,6 +168,7 @@ fun GridView(board: Board, player1: String?, player2: String?, name: MutableStat
             timerJob.value?.cancel() // Cancel the timer job when the composable is disposed
         }
     }
+
 
 }
 
